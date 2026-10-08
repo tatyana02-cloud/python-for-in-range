@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тест: Цикл for и условия</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .quiz-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 780px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      padding: 32px;
+      position: relative;
+    }
+    .start-screen {
+      text-align: center;
+      padding: 10px 0;
+    }
+    .start-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 20px;
+    }
+    .rules-card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px 24px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+    .rules-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+    .rules-list {
+      list-style-type: decimal;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rules-list li {
+      font-size: 15px;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 32px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #2563eb;
+      transition: width 0.3s ease;
+    }
+    .header-info {
+      display: flex;
+      justify-content: space-between;
+      color: #64748b;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .question-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .code-box {
+      background: #1e1e2e;
+      color: #ffffff;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+    .options-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .options-grid.row-layout {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+    .option-btn {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 16px;
+      color: #334155;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.2s, border-color 0.2s;
+      line-height: 1.4;
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .row-layout .option-btn {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 14px 10px;
+      gap: 6px;
+    }
+    .option-btn:hover:not(:disabled):not(.wrong) {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .option-letter {
+      font-weight: 600;
+      min-width: 22px;
+      flex-shrink: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .row-layout .option-letter {
+      min-width: auto;
+      font-size: 16px;
+    }
+    .option-text {
+      white-space: pre-wrap;
+      flex-grow: 1;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .option-btn.correct {
+      background: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #15803d !important;
+      font-weight: 600;
+      cursor: default;
+    }
+    .option-btn.wrong {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #b91c1c !important;
+      cursor: not-allowed;
+    }
+    .feedback-box {
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+      line-height: 1.5;
+    }
+    .feedback-box.correct {
+      background: #f0fdf4;
+      border-left: 5px solid #22c55e;
+      color: #166534;
+    }
+    .feedback-box.wrong {
+      background: #fef2f2;
+      border-left: 5px solid #ef4444;
+      color: #991b1b;
+    }
+    .code-subtitle {
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .correct-code-display {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .action-container {
+      display: none;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .btn-continue {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 36px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+    }
+    .btn-continue:hover {
+      background: #1d4ed8;
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+    }
+    .btn-continue:active {
+      transform: scale(0.97);
+    }
+    .result-screen {
+      display: none;
+      text-align: center;
+      padding: 10px 0;
+    }
+    .result-score {
+      font-size: 44px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 12px 0;
+    }
+    .result-msg {
+      font-size: 15px;
+      color: #475569;
+      margin-bottom: 24px;
+    }
+    .results-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0 28px 0;
+    }
+    .badge-item {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .badge-item.correct {
+      background: #dcfce7;
+      color: #15803d;
+      border: 2px solid #22c55e;
+    }
+    .badge-item.wrong {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 2px solid #ef4444;
+    }
+    .badge-item.unanswered {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 2px solid #cbd5e1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-card">
+    <div class="start-screen" id="start-screen">
+      <h1 class="start-title">Тест: Цикл for и условия</h1>
+      <div class="rules-card">
+        <div class="rules-title">Инструкция к прохождению:</div>
+        <ol class="rules-list">
+          <li><strong>Баллы:</strong> 1 балл дается за выбор верного ответа с первой попытки.</li>
+          <li><strong>Разбор:</strong> после выбора варианта отображается подробное объяснение работы кода.</li>
+          <li><strong>Переход:</strong> кнопка «Продолжить» появляется сразу после нахождения правильного ответа.</li>
+        </ol>
+      </div>
+      <button class="btn-primary" onclick="startQuiz()">Начать тест</button>
+    </div>
+
+    <div id="quiz-content" style="display: none;">
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progress"></div>
+      </div>
+      <div class="header-info">
+        <span id="question-number">Задание 1 из 16</span>
+        <span id="score-counter">Баллы: 0</span>
+      </div>
+      <div class="question-title" id="question-text"></div>
+      <div class="code-box" id="code-block" style="display: none;"></div>
+      <div class="options-grid" id="options"></div>
+      
+      <div class="feedback-box" id="feedback"></div>
+
+      <div class="action-container" id="action-container">
+        <button class="btn-continue" id="continue-btn" onclick="proceedNext()">Продолжить</button>
+      </div>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+      <h2>Тестирование завершено</h2>
+      <div class="result-score" id="final-score">0 / 16</div>
+      <p class="result-msg" id="final-message"></p>
+      
+      <div style="font-weight: 600; color: #334155; margin-bottom: 8px;">Результаты по заданиям:</div>
+      <div class="results-badges" id="results-badges"></div>
+
+      <button class="btn-primary" onclick="restartQuiz()">Пройти повторно</button>
+    </div>
+  </div>
+
+  <script>
+    const questionsDatabase = [
+      // 1. Базовый print(i) с одним числом
+      [
+        {
+          text: "№1. Какие числа напечатает этот цикл в консоли?",
+          code: "for i in range(6):\n    print(i)",
+          isRowLayout: true,
+          options: [
+            { text: "0\n1\n2\n3\n4\n5", comment: "Если у range один аргумент (6), отсчет ВСЕГДА начинается с 0 и идет до 6 - 1 = 5 (число 6 не входит).", isCorrect: true },
+            { text: "1\n2\n3\n4\n5\n6", comment: "range с одним параметром всегда начинает с нуля, а само стоп-число 6 не включается.", isCorrect: false },
+            { text: "0\n1\n2\n3\n4\n5\n6", comment: "Правая граница никогда не входит в диапазон.", isCorrect: false },
+            { text: "i\ni\ni\ni\ni\ni", comment: "i написана без кавычек, поэтому программа подставляет реальные числовые значения переменной.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№1. Какие числа напечатает этот цикл в консоли?",
+          code: "for i in range(4):\n    print(i)",
+          isRowLayout: true,
+          options: [
+            { text: "0\n1\n2\n3", comment: "range(4) начинает с 0 и заканчивается числом 4 - 1 = 3 (число 4 не входит).", isCorrect: true },
+            { text: "1\n2\n3\n4", comment: "По умолчанию отсчет range с одним параметром всегда стартует с нуля.", isCorrect: false },
+            { text: "0\n1\n2\n3\n4", comment: "Правая граница 4 никогда не включается.", isCorrect: false },
+            { text: "i\ni\ni\ni", comment: "Переменная i выводит числовые значения, а не саму букву.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№1. Какие числа напечатает этот цикл в консоли?",
+          code: "for num in range(5):\n    print(num)",
+          isRowLayout: true,
+          options: [
+            { text: "0\n1\n2\n3\n4", comment: "range(5) создает значения от 0 до 4 включительно (пятерка исключается).", isCorrect: true },
+            { text: "1\n2\n3\n4\n5", comment: "Отсчет начинается с 0, а само число 5 в вывод не попадает.", isCorrect: false },
+            { text: "0\n1\n2\n3\n4\n5", comment: "Правая граница всегда отсекается.", isCorrect: false },
+            { text: "num\nnum\nnum\nnum\nnum", comment: "Без кавычек печатается значение переменной num.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 2. Роль переменной цикла
+      [
+        {
+          text: "№2. В коде написана переменная k. Какую роль она выполняет на самом деле?",
+          code: "for k in range(7):\n    print(\"Загрузка...\")",
+          isRowLayout: false,
+          options: [
+            { text: "Она автоматически принимает очередное число (0, 1, 2, 3, 4, 5, 6) на каждом шаге, отсчитывая повторения", comment: "Переменная после for — это счетчик. Даже если мы не выводим k через print, Python на каждом повторе кладет в нее текущее число из range.", isCorrect: true },
+            { text: "Она задает задержку выполнения команды в миллисекундах", comment: "Имя переменной никак не регулирует скорость работы компьютера.", isCorrect: false },
+            { text: "Буква k обязательна, без нее Python вообще не может выполнять циклы", comment: "Имя выбирает программист: вместо k можно написать i, step, count или любое другое название.", isCorrect: false },
+            { text: "Она удаляет фразу «Загрузка...» из памяти после работы цикла", comment: "Переменная цикла служит только для перебора значений диапазона, а не для очистки памяти.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 3. range с двумя числами
+      [
+        {
+          text: "№3. Какие числа появятся на экране при выполнении этой программы?",
+          code: "for step in range(3, 8):\n    print(step)",
+          isRowLayout: true,
+          options: [
+            { text: "3\n4\n5\n6\n7", comment: "range(3, 8) начинает с первого числа (3) и доходит до 8 - 1 = 7 включительно.", isCorrect: true },
+            { text: "3\n4\n5\n6\n7\n8", comment: "Правая граница (8) никогда не включается в диапазон.", isCorrect: false },
+            { text: "0\n1\n2\n3\n4\n5\n6\n7", comment: "Первый параметр равен 3, поэтому отсчет начинается именно с тройки, а не с нуля.", isCorrect: false },
+            { text: "4\n5\n6\n7\n8", comment: "Стартовое число 3 обязательно входит в цикл.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№3. Какие числа появятся на экране при выполнении этой программы?",
+          code: "for x in range(2, 6):\n    print(x)",
+          isRowLayout: true,
+          options: [
+            { text: "2\n3\n4\n5", comment: "range(2, 6) выведет числа от 2 до 5 включительно (число 6 не входит).", isCorrect: true },
+            { text: "2\n3\n4\n5\n6", comment: "Шестерка является правой границей и не входит.", isCorrect: false },
+            { text: "0\n1\n2\n3\n4\n5", comment: "Диапазон начинается строго с двойки.", isCorrect: false },
+            { text: "3\n4\n5\n6", comment: "Стартовое число 2 всегда включается в диапазон.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№3. Какие числа появятся на экране при выполнении этой программы?",
+          code: "for n in range(4, 9):\n    print(n)",
+          isRowLayout: true,
+          options: [
+            { text: "4\n5\n6\n7\n8", comment: "range(4, 9) идет от 4 до 9 - 1 = 8.", isCorrect: true },
+            { text: "4\n5\n6\n7\n8\n9", comment: "Число 9 не включается.", isCorrect: false },
+            { text: "0\n1\n2\n3\n4\n5\n6\n7\n8", comment: "Отсчет начинается с первого числа (4), а не с нуля.", isCorrect: false },
+            { text: "5\n6\n7\n8\n9", comment: "Начальное число 4 обязательно печатается на первом шаге.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 4. Печать текста без переменной цикла
+      [
+        {
+          text: "№4. Сколько раз цикл напечатает слово «Привет» в консоль?",
+          code: "for i in range(5):\n    print(\"Привет\")",
+          isRowLayout: false,
+          options: [
+            { text: "5 раз", comment: "range(5) генерирует числа 0, 1, 2, 3, 4 — ровно 5 значений, поэтому тело цикла выполнится 5 раз.", isCorrect: true },
+            { text: "4 раза", comment: "Хотя последнее число равно 4, отсчет идет с нуля (0, 1, 2, 3, 4), поэтому шагов ровно 5.", isCorrect: false },
+            { text: "1 раз", comment: "Команда внутри тела цикла повторяется на каждом шаге.", isCorrect: false },
+            { text: "Бесконечно", comment: "Цикл for завершится сразу, как только закончатся элементы в range.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№4. Сколько раз цикл напечатает смайлик в консоль?",
+          code: "for step in range(3):\n    print(\":)\")",
+          isRowLayout: false,
+          options: [
+            { text: "3 раза", comment: "range(3) делает ровно 3 итерации: при step = 0, 1 и 2.", isCorrect: true },
+            { text: "2 раза", comment: "С учетом нуля шагов ровно три: 0, 1, 2.", isCorrect: false },
+            { text: "1 раз", comment: "Строка повторяется на каждой итерации цикла.", isCorrect: false },
+            { text: "Бесконечно", comment: "Цикл for выполняет конечное число шагов.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№4. Сколько раз программа выведет фразу «Старт!»?",
+          code: "for k in range(6):\n    print(\"Старт!\")",
+          isRowLayout: false,
+          options: [
+            { text: "6 раз", comment: "range(6) генерирует 6 чисел (от 0 до 5), поэтому строка напечатается ровно 6 раз.", isCorrect: true },
+            { text: "5 раз", comment: "Отсчет с 0 до 5 дает ровно 6 шагов.", isCorrect: false },
+            { text: "1 раз", comment: "Команды внутри цикла выполняются на каждом повторе.", isCorrect: false },
+            { text: "7 раз", comment: "Число 6 не входит в диапазон, лишнего повтора не будет.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 5. range с шагом и ловушкой на границу
+      [
+        {
+          text: "№5. Какие числа напечатает этот цикл в консоли?",
+          code: "for num in range(2, 11, 3):\n    print(num)",
+          isRowLayout: true,
+          options: [
+            { text: "2\n5\n8", comment: "Старт с 2, шаг +3 дает 5 и 8. Следующее число 11 совпадает с правой границей, а правая граница в Python НИКОГДА не включается!", isCorrect: true },
+            { text: "2\n5\n8\n11", comment: "Ловушка! Число 11 указано как стоп-значение, поэтому оно исключается из диапазона, даже если подходит по шагу.", isCorrect: false },
+            { text: "3\n6\n9", comment: "Старт задан числом 2, а не 3, поэтому отсчет начинается с двойки.", isCorrect: false },
+            { text: "2\n5\n8\n11\n14", comment: "Цикл останавливается строго до достижения числа 11.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№5. Какие числа напечатает этот цикл в консоли?",
+          code: "for num in range(1, 9, 2):\n    print(num)",
+          isRowLayout: true,
+          options: [
+            { text: "1\n3\n5\n7", comment: "Старт с 1, шаг +2 дает 3, 5, 7. Число 9 — это правая граница, поэтому оно не попадает в цикл!", isCorrect: true },
+            { text: "1\n3\n5\n7\n9", comment: "Число 9 является правой границей и не включается.", isCorrect: false },
+            { text: "2\n4\n6\n8", comment: "Старт задан числом 1, поэтому цикл перебирает нечетные числа.", isCorrect: false },
+            { text: "1\n3\n5", comment: "Число 7 меньше границы 9, поэтому оно обязательно печатается.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№5. Какие числа напечатает этот цикл в консоли?",
+          code: "for num in range(3, 15, 4):\n    print(num)",
+          isRowLayout: true,
+          options: [
+            { text: "3\n7\n11", comment: "Старт с 3, шаг +4 дает 7 и 11. Следующее число 15 совпадает с правой границей и поэтому исключается!", isCorrect: true },
+            { text: "3\n7\n11\n15", comment: "Ловушка! Число 15 является правой границей диапазона.", isCorrect: false },
+            { text: "4\n8\n12", comment: "Отсчет начинается с первого числа (3), а не с шага.", isCorrect: false },
+            { text: "3\n7", comment: "Число 11 меньше 15, поэтому оно входит в цикл.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 6. Ошибка: пропуск двоеточия
+      [
+        {
+          text: "№6. Какая ошибка допущена в этом коде?",
+          code: "for round in range(1, 5)\n    print(\"Раунд\", round)",
+          isRowLayout: false,
+          options: [
+            { text: "В конце строки for забыли поставить обязательное двоеточие «:»", comment: "Каждая заголовочная строка цикла for в Python обязана оканчиваться двоеточием.", isCorrect: true },
+            { text: "Слово round нельзя использовать как имя переменной", comment: "round — вполне допустимое имя переменной-счетчика.", isCorrect: false },
+            { text: "Внутри print нельзя писать текст в кавычках", comment: "Текст в кавычках печатается абсолютно корректно.", isCorrect: false },
+            { text: "Вместо for нужно обязательно писать while", comment: "Для перебора чисел range используется цикл for.", isCorrect: false }
+          ],
+          correctCode: "for round in range(1, 5):\n    print(\"Раунд\", round)"
+        }
+      ],
+
+      // 7. Ошибка: IndentationError
+      [
+        {
+          text: "№7. Какая ошибка возникнет при запуске этого кода?",
+          code: "for count in range(4):\nprint(\"Осталось:\", count)",
+          isRowLayout: false,
+          options: [
+            { text: "IndentationError: команда внутри цикла написана без отступа в 4 пробела", comment: "Команды, которые должны повторяться внутри цикла, обязаны иметь отступ вправо (обычно 4 пробела). Без него Python не понимает структуру тела цикла.", isCorrect: true },
+            { text: "TypeError: число 4 не может быть границей", comment: "Число 4 в range(4) абсолютно корректно.", isCorrect: false },
+            { text: "NameError: переменная count не объявлена заранее", comment: "Переменная count автоматически создается самим заголовком цикла.", isCorrect: false },
+            { text: "Код выполнится без ошибок", comment: "Без отступа программа завершится аварийно ошибкой IndentationError.", isCorrect: false }
+          ],
+          correctCode: "for count in range(4):\n    print(\"Осталось:\", count)"
+        }
+      ],
+
+      // 8. Ошибка: = вместо == в условии внутри цикла
+      [
+        {
+          text: "№8. Какая ошибка допущена в строке с проверкой условия?",
+          code: "for i in range(3):\n    guess = int(input())\n    if guess = 50:\n        print(\"Верно\")",
+          isRowLayout: false,
+          options: [
+            { text: "Использован одиночный знак = (присваивание) вместо == (сравнение)", comment: "Одинарный знак = перезаписывает переменную. Для проверки равенства в условиях ВСЕГДА используется двойное равенство ==.", isCorrect: true },
+            { text: "Число 50 обязательно нужно было взять в кавычки \"50\"", comment: "Мы преобразовали ввод в int(), поэтому сравнение с числом 50 без кавычек правильное.", isCorrect: false },
+            { text: "Внутри цикла for запрещено использовать условия if", comment: "Ветвление if прекрасно работает внутри циклов.", isCorrect: false },
+            { text: "Слово guess является зарезервированным словом языка", comment: "guess — обычное разрешенное имя переменной.", isCorrect: false }
+          ],
+          correctCode: "for i in range(3):\n    guess = int(input())\n    if guess == 50:\n        print(\"Верно\")"
+        }
+      ],
+
+      // 9. Включение границы для таблицы
+      [
+        {
+          text: "№9. Нам нужно перебрать множители от 1 до 10 включительно. Как правильно записать range()?",
+          code: null,
+          isRowLayout: false,
+          options: [
+            { text: "range(1, 11)", comment: "Так как правая граница не включается, 11 - 1 = 10. Диапазон будет ровно от 1 до 10 включительно.", isCorrect: true },
+            { text: "range(1, 10)", comment: "range(1, 10) остановится на числе 9 и число 10 не попадет в таблицу.", isCorrect: false },
+            { text: "range(10)", comment: "range(10) начнется с нуля и дойдет только до 9.", isCorrect: false },
+            { text: "range(0, 11)", comment: "Здесь появится лишний ноль в самом начале.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№9. Нужно вывести номера глав книги от 1 до 15 включительно. Как правильно записать range()?",
+          code: null,
+          isRowLayout: false,
+          options: [
+            { text: "range(1, 16)", comment: "Правая граница отсекается: 16 - 1 = 15, что охватывает главы с 1 по 15.", isCorrect: true },
+            { text: "range(1, 15)", comment: "range(1, 15) закончится на 14 главе.", isCorrect: false },
+            { text: "range(15)", comment: "Начнется с нуля и дойдет только до 14.", isCorrect: false },
+            { text: "range(0, 16)", comment: "В таком варианте появится лишняя нулевая глава.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№9. В игре 8 уровней (с 1 по 8 включительно). Какой range() переберет все эти уровни?",
+          code: null,
+          isRowLayout: false,
+          options: [
+            { text: "range(1, 9)", comment: "Чтобы включить число 8, границу берут на 1 больше: 9 - 1 = 8.", isCorrect: true },
+            { text: "range(1, 8)", comment: "range(1, 8) закончится на уровне 7.", isCorrect: false },
+            { text: "range(8)", comment: "range(8) выдаст числа от 0 до 7.", isCorrect: false },
+            { text: "range(0, 9)", comment: "Такой вызов создаст нулевой уровень.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 10. Арифметика в цикле
+      [
+        {
+          text: "№10. Какое значение стоимости будет напечатано на ПОСЛЕДНЕМ шаге работы этого цикла?",
+          code: "price = 8\nfor count in range(1, 4):\n    total = count * price\n    print(total)",
+          isRowLayout: false,
+          options: [
+            { text: "24", comment: "range(1, 4) дает значения count = 1, 2, 3. На последнем шаге count равен 3, поэтому вычисляется: 3 * 8 = 24.", isCorrect: true },
+            { text: "32", comment: "Значение count = 4 не входит в диапазон, умножение 4 * 8 не выполнится.", isCorrect: false },
+            { text: "8", comment: "8 — это результат самого первого шага (1 * 8).", isCorrect: false },
+            { text: "16", comment: "16 — это второй шаг цикла (2 * 8).", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№10. Какое число будет напечатано на ПОСЛЕДНЕМ шаге работы этого цикла?",
+          code: "cost = 5\nfor count in range(1, 5):\n    ans = count * cost\n    print(ans)",
+          isRowLayout: false,
+          options: [
+            { text: "20", comment: "range(1, 5) перебирает 1, 2, 3, 4. Последнее значение count равно 4: 4 * 5 = 20.", isCorrect: true },
+            { text: "25", comment: "Число 5 не входит в range, умножение 5 * 5 не произойдет.", isCorrect: false },
+            { text: "5", comment: "5 — это результат первого шага.", isCorrect: false },
+            { text: "15", comment: "15 — это предпоследний шаг при count = 3.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№10. Какое число будет напечатано на ПОСЛЕДНЕМ шаге работы этого цикла?",
+          code: "rate = 6\nfor count in range(1, 4):\n    res = count * rate\n    print(res)",
+          isRowLayout: false,
+          options: [
+            { text: "18", comment: "range(1, 4) останавливается на count = 3: 3 * 6 = 18.", isCorrect: true },
+            { text: "24", comment: "Шаг с count = 4 не выполняется.", isCorrect: false },
+            { text: "6", comment: "6 — это результат первого шага (1 * 6).", isCorrect: false },
+            { text: "12", comment: "12 — результат второго шага (2 * 6).", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 11. Форматированный вывод
+      [
+        {
+          text: "№11. Что напечатает эта программа при запуске?",
+          code: "price = 7\nfor k in range(1, 4):\n    print(price, \"*\", k, \"=\", price * k)",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "7 * 1 = 7\n7 * 2 = 14\n7 * 3 = 21", 
+              comment: "Переменные price (7), k (1, 2, 3) и результат их умножения выводятся числами, а знаки '*' и '=' в кавычках печатаются как обычный текст.", 
+              isCorrect: true 
+            },
+            { 
+              text: "7 * k = price * k\n7 * k = price * k\n7 * k = price * k", 
+              comment: "Имена price и k написаны без кавычек, поэтому вместо их названий подставляются реальные вычисленные числа.", 
+              isCorrect: false 
+            },
+            { 
+              text: "7 * 1 = 7\n7 * 2 = 14\n7 * 3 = 21\n7 * 4 = 28", 
+              comment: "range(1, 4) останавливается на числе 3, число 4 в цикл не попадает.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Ошибка SyntaxError", 
+              comment: "Вызов функции print со списком аргументов через запятую полностью корректен.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№11. Что напечатает эта программа при запуске?",
+          code: "cost = 9\nfor k in range(1, 3):\n    print(cost, \"*\", k, \"=\", cost * k)",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "9 * 1 = 9\n9 * 2 = 18", 
+              comment: "range(1, 3) перебирает только k = 1 и k = 2. Переменные подставляют свои числовые значения.", 
+              isCorrect: true 
+            },
+            { 
+              text: "9 * 1 = 9\n9 * 2 = 18\n9 * 3 = 27", 
+              comment: "range(1, 3) останавливается на числе 2, шаг с k = 3 не выполняется.", 
+              isCorrect: false 
+            },
+            { 
+              text: "cost * k = cost * k\ncost * k = cost * k", 
+              comment: "Без кавычек cost и k выводят свои значения, а не названия.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Ошибка SyntaxError", 
+              comment: "Конструкция print полностью валидна.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№11. Что напечатает эта программа при запуске?",
+          code: "n = 4\nfor i in range(1, 4):\n    print(n, \"+\", i, \"=\", n + i)",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "4 + 1 = 5\n4 + 2 = 6\n4 + 3 = 7", 
+              comment: "Числа n и i складываются, а строка \"+\" выводится как символ.", 
+              isCorrect: true 
+            },
+            { 
+              text: "4 + 1 = 5\n4 + 2 = 6\n4 + 3 = 7\n4 + 4 = 8", 
+              comment: "range(1, 4) исключает число 4.", 
+              isCorrect: false 
+            },
+            { 
+              text: "n + i = n + i\nn + i = n + i\nn + i = n + i", 
+              comment: "Имена переменных подставляют свои значения, так как записаны без кавычек.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Ошибка SyntaxError", 
+              comment: "Синтаксис кода абсолютно корректен.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 12. Логика break
+      [
+        {
+          text: "№12. Сколько раз программа напечатает слово «Пропуск» до завершения цикла?",
+          code: "target = 5\n\nfor num in 2, 4, 5, 8, 10:\n    if num == target:\n        print(\"Найдено!\")\n        break\n    print(\"Пропуск\")",
+          isRowLayout: false,
+          options: [
+            { text: "2 раза", comment: "Для чисел 2 и 4 условие num == target ложно, поэтому дважды печатается «Пропуск». Для числа 5 условие выполняется: печатается «Найдено!», и break моментально останавливает цикл. Команды ниже break на этом шаге уже не выполняются.", isCorrect: true },
+            { text: "3 раза", comment: "Когда num равно 5, срабатывает break и программа выходит из цикла, не доходя до строки print(\"Пропуск\").", isCorrect: false },
+            { text: "4 раза", comment: "Числа 8 и 10 даже не проверяются, так как break завершил цикл раньше.", isCorrect: false },
+            { text: "Ни одного раза", comment: "Для чисел 2 и 4 условие if не сработало, поэтому print(\"Пропуск\") успел выполниться дважды.", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№12. Сколько раз программа напечатает слово «Мимо» до завершения цикла?",
+          code: "target = 7\n\nfor num in 3, 5, 7, 9:\n    if num == target:\n        print(\"В цель!\")\n        break\n    print(\"Мимо\")",
+          isRowLayout: false,
+          options: [
+            { text: "2 раза", comment: "Для 3 и 5 выводится «Мимо». При num = 7 печатается «В цель!», после чего break сразу прерывает цикл.", isCorrect: true },
+            { text: "3 раза", comment: "На числе 7 строка «Мимо» не печатается из-за сработавшего break.", isCorrect: false },
+            { text: "1 раз", comment: "Оба числа 3 и 5 не равны 7, поэтому «Мимо» печатается дважды.", isCorrect: false },
+            { text: "Ни одного раза", comment: "Условие ложно на первых двух шагах, поэтому они печатают «Мимо».", isCorrect: false }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№12. Сколько раз программа напечатает слово «Проверка» до завершения цикла?",
+          code: "secret = 2\n\nfor num in 2, 4, 6:\n    if num == secret:\n        print(\"Угадал!\")\n        break\n    print(\"Проверка\")",
+          isRowLayout: false,
+          options: [
+            { text: "Ни одного раза", comment: "Уже на первом числе 2 условие num == secret истинно: печатается «Угадал!» и break немедленно останавливает цикл.", isCorrect: true },
+            { text: "1 раз", comment: "Команда print(\"Проверка\") стоит ПОСЛЕ break и на первом шаге не выполняется.", isCorrect: false },
+            { text: "2 раза", comment: "Цикл остановился на первом же числе и дальше не пошел.", isCorrect: false },
+            { text: "3 раза", comment: "break завершает работу цикла досрочно.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 13. else у цикла for
+      [
+        {
+          text: "№13. В каком случае программа напечатает надпись «Сейф заблокирован»?",
+          code: "for attempt in range(3):\n    # проверка пин-кода\n    pass\nelse:\n    print(\"Сейф заблокирован\")",
+          isRowLayout: false,
+          options: [
+            { text: "Если пользователь потратил все 3 попытки и ни разу не сработал break", comment: "Блок else у цикла for вызывается ТОЛЬКО тогда, когда цикл полностью исчерпал диапазон и не был прерван по break.", isCorrect: true },
+            { text: "После каждого неправильного ввода пин-кода", comment: "Для реакции на каждом шаге условие пишут внутри тела цикла.", isCorrect: false },
+            { text: "Когда пользователь ввел верный пин-код и сработал break", comment: "Если сработал break, блок else у цикла for пропускается и не выполняется.", isCorrect: false },
+            { text: "Никогда: у цикла for не бывает ветки else", comment: "В Python конструкция for ... else является штатной возможностью языка.", isCorrect: false }
+          ],
+          correctCode: null
+        }
+      ],
+
+      // 14. Ловушка: else привязан к if вместо for
+      [
+        {
+          text: "№14. Ученик хотел, чтобы надпись «Попытки исчерпаны» вывелась ОДИН раз, если число не угадано за 3 раза. Какая логическая ошибка в коде?",
+          code: "secret = 50\nfor i in range(3):\n    guess = int(input())\n    if guess == secret:\n        print(\"Победа!\")\n        break\n    else:\n        print(\"Попытки исчерпаны\")",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "Слово else написано с отступом и относится к if, поэтому «Попытки исчерпаны» будет печататься при КАЖДОМ неверном вводе", 
+              comment: "Чтобы надпись появилась только один раз после исчерпания всех попыток, else должен стоять на одном уровне с for (без отступа), а не внутри цикла.", 
+              isCorrect: true 
+            },
+            { 
+              text: "В цикле for нельзя использовать команду break вместе с if", 
+              comment: "break прекрасно работает внутри условий в цикле.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Диапазон range(3) дает только 2 попытки вместо трех", 
+              comment: "range(3) генерирует 0, 1, 2 — ровно 3 повтора.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Команда int(input()) не может считывать числа внутри цикла", 
+              comment: "Считывание чисел в теле цикла работает абсолютно штатно.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: "secret = 50\nfor i in range(3):\n    guess = int(input())\n    if guess == secret:\n        print(\"Победа!\")\n        break\nelse:\n    print(\"Попытки исчерпаны\")"
+        }
+      ],
+
+      // 15. Несколько break в одном цикле
+      [
+        {
+          text: "№15. В игре есть два условия выхода: кодовое число отмены (0) или верный ответ (777). Пользователь ввел: 12, затем 0. Что выведет код?",
+          code: "for attempt in range(5):\n    num = int(input())\n    if num == 0:\n        print(\"Выход игрока\")\n        break\n    if num == 777:\n        print(\"Сейф открыт\")\n        break\nelse:\n    print(\"Попытки кончились\")",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "Выход игрока", 
+              comment: "При вводе 12 оба if ложны. При вводе 0 сработал первый if, напечатал «Выход игрока» и break завершил цикл. Ветка else цикла for не выполняется, так как был break.", 
+              isCorrect: true 
+            },
+            { 
+              text: "Выход игрока\nПопытки кончились", 
+              comment: "Любой сработавший break немедленно прерывает цикл и отменяет блок else у for.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Попытки кончились", 
+              comment: "Цикл завершился досрочно по break, блок else у цикла не выполнится.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Ошибка SyntaxError: нельзя писать два break в одном цикле", 
+              comment: "В теле цикла можно писать сколько угодно условий if с вызовом break.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№15. В игре два условия выхода: сдаться (0) или угадать (100). Пользователь ввел: 25, 40, затем 100. Что выведет код?",
+          code: "for attempt in range(5):\n    num = int(input())\n    if num == 0:\n        print(\"Сдался\")\n        break\n    if num == 100:\n        print(\"Победа\")\n        break\nelse:\n    print(\"Конец игры\")",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "Победа", 
+              comment: "На числах 25 и 40 условия ложны. При вводе 100 сработал второй if, напечатал «Победа» и break вышел из цикла. Ветка else пропускается.", 
+              isCorrect: true 
+            },
+            { 
+              text: "Победа\nКонец игры", 
+              comment: "Блок else не срабатывает при досрочном выходе через break.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Конец игры", 
+              comment: "Сработало условие второго if, поэтому надпись «Победа» обязательно появится.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Сдался\nПобеда", 
+              comment: "Первый if проверял num == 0, при 100 он не выполняется.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: null
+        },
+        {
+          text: "№15. В игре два условия выхода: стоп (0) или пароль (999). Пользователь ввел: 10, 20, 30 (все 3 попытки неверные). Что выведет код?",
+          code: "for attempt in range(3):\n    num = int(input())\n    if num == 0:\n        print(\"Стоп\")\n        break\n    if num == 999:\n        print(\"Верно\")\n        break\nelse:\n    print(\"Попытки исчерпаны\")",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "Попытки исчерпаны", 
+              comment: "Ни один из break ни разу не сработал. Цикл завершил все 3 итерации естественным путем, поэтому сработал блок else у цикла for.", 
+              isCorrect: true 
+            },
+            { 
+              text: "Стоп", 
+              comment: "Число 0 не вводилось, первый if не срабатывал.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Верно", 
+              comment: "Число 999 не вводилось, второй if не срабатывал.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Программа ничего не выведет", 
+              comment: "Когда цикл for заканчивает все шаги без break, блок else обязательно печатает сообщение.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: null
+        }
+      ],
+
+// 16. Ошибка: забытый break при победе
+      [
+        {
+          text: "№16. Ученик написал игру «Угадай число». Игрок отгадал секретное число с первой попытки, но игра всё равно продолжила спрашивать числа и в конце написала «Попытки кончились!». Какая ошибка в коде?",
+          code: "secret = 42\nfor i in range(3):\n    guess = int(input())\n    if guess == secret:\n        print(\"Победа!\")\nelse:\n    print(\"Попытки кончились!\")",
+          isRowLayout: false,
+          options: [
+            { 
+              text: "Внутри if забыли написать команду break, чтобы сразу остановить цикл при победе", 
+              comment: "Без break цикл не остановится даже после победы и продолжит спрашивать числа, а после завершения всех шагов обязательно сработает блок else!", 
+              isCorrect: true 
+            },
+            { 
+              text: "Вместо range(3) нужно было написать range(1, 3)", 
+              comment: "range(1, 3) дал бы всего 2 попытки вместо трех, это не останавливает цикл при победе.", 
+              isCorrect: false 
+            },
+            { 
+              text: "После блока if нельзя ставить блок else у цикла for", 
+              comment: "Ветка else у for допустима, но она отменяется только в том случае, если сработал break.", 
+              isCorrect: false 
+            },
+            { 
+              text: "Секретное число обязательно нужно вводить через input()", 
+              comment: "Задать число в переменной secret заранее — абсолютно нормальный способ для такой игры.", 
+              isCorrect: false 
+            }
+          ],
+          correctCode: "secret = 42\nfor i in range(3):\n    guess = int(input())\n    if guess == secret:\n        print(\"Победа!\")\n        break\nelse:\n    print(\"Попытки кончились!\")"        }
+ 	]
+      ];
+
+
+    const letters = ["А", "Б", "В", "Г"];
+    let questions = [];
+    let currentQuestion = 0;
+    let userState = [];
+
+    function shuffleArray(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function prepareQuestions() {
+      questions = questionsDatabase.map(function(variations) {
+        const chosen = variations[Math.floor(Math.random() * variations.length)];
+        return {
+          text: chosen.text,
+          code: chosen.code,
+          correctCode: chosen.correctCode,
+          isRowLayout: chosen.isRowLayout,
+          options: shuffleArray(chosen.options)
+        };
+      });
+
+      userState = questions.map(function() {
+        return {
+          solved: false,
+          attempts: 0,
+          firstTrySuccess: false,
+          wrongIndices: [],
+          selectedCorrectIndex: null
+        };
+      });
+    }
+
+    function startQuiz() {
+      prepareQuestions();
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('quiz-content').style.display = 'block';
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      const state = userState[currentQuestion];
+
+      document.getElementById('question-number').innerText = "Задание " + (currentQuestion + 1) + " из " + questions.length;
+      
+      const totalScore = userState.reduce(function(acc, item) {
+        return acc + (item.firstTrySuccess ? 1 : 0);
+      }, 0);
+      document.getElementById('score-counter').innerText = "Баллы: " + totalScore;
+      document.getElementById('progress').style.width = ((currentQuestion / questions.length) * 100) + "%";
+
+      document.getElementById('question-text').innerText = q.text;
+      const codeBlock = document.getElementById('code-block');
+      if (q.code) {
+        codeBlock.innerText = q.code;
+        codeBlock.style.display = 'block';
+      } else {
+        codeBlock.style.display = 'none';
+      }
+
+      const optionsContainer = document.getElementById('options');
+      optionsContainer.innerHTML = '';
+      if (q.isRowLayout) {
+        optionsContainer.classList.add('row-layout');
+      } else {
+        optionsContainer.classList.remove('row-layout');
+      }
+
+      for (let i = 0; i < q.options.length; i++) {
+        const opt = q.options[i];
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'option-btn';
+        btn.id = 'opt-btn-' + i;
+        btn.innerHTML = '<span class="option-letter">' + letters[i] + ')</span>' +
+                        '<span class="option-text">' + opt.text + '</span>';
+
+        if (state.solved) {
+          btn.disabled = true;
+          if (opt.isCorrect) {
+            btn.classList.add('correct');
+          }
+        } else if (state.wrongIndices.indexOf(i) !== -1) {
+          btn.disabled = true;
+          btn.classList.add('wrong');
+        }
+
+        btn.onclick = (function(idx) {
+          return function() { selectOption(idx); };
+        })(i);
+
+        optionsContainer.appendChild(btn);
+      }
+
+      const feedback = document.getElementById('feedback');
+      const actionContainer = document.getElementById('action-container');
+      const continueBtn = document.getElementById('continue-btn');
+
+      if (state.solved) {
+        const selectedOpt = q.options[state.selectedCorrectIndex];
+        feedback.className = 'feedback-box correct';
+        feedback.style.display = 'block';
+        let feedbackHTML = '<strong>Верно!</strong> ' + selectedOpt.comment;
+        if (q.correctCode) {
+          feedbackHTML += '<div class="code-subtitle">Исправленный код:</div>' +
+                          '<div class="correct-code-display">' + q.correctCode + '</div>';
+        }
+        feedback.innerHTML = feedbackHTML;
+
+        actionContainer.style.display = 'flex';
+        continueBtn.innerText = (currentQuestion === questions.length - 1) ? "Завершить тест" : "Продолжить";
+      } else {
+        actionContainer.style.display = 'none';
+        if (state.wrongIndices.length > 0) {
+          const lastWrongIdx = state.wrongIndices[state.wrongIndices.length - 1];
+          feedback.className = 'feedback-box wrong';
+          feedback.style.display = 'block';
+          feedback.innerHTML = '<strong>Неверно.</strong> ' + q.options[lastWrongIdx].comment;
+        } else {
+          feedback.style.display = 'none';
+          feedback.className = 'feedback-box';
+          feedback.innerHTML = '';
+        }
+      }
+    }
+
+    function selectOption(index) {
+      const q = questions[currentQuestion];
+      const state = userState[currentQuestion];
+      if (state.solved) return;
+
+      const clickedBtn = document.getElementById('opt-btn-' + index);
+      const feedback = document.getElementById('feedback');
+      const actionContainer = document.getElementById('action-container');
+      const continueBtn = document.getElementById('continue-btn');
+      const selectedOption = q.options[index];
+
+      if (selectedOption.isCorrect) {
+        state.solved = true;
+        state.selectedCorrectIndex = index;
+        if (state.attempts === 0) {
+          state.firstTrySuccess = true;
+        }
+
+        for (let i = 0; i < q.options.length; i++) {
+          const btn = document.getElementById('opt-btn-' + i);
+          if (btn) {
+            btn.disabled = true;
+            if (q.options[i].isCorrect) {
+              btn.classList.remove('wrong');
+              btn.classList.add('correct');
+            }
+          }
+        }
+
+        const totalScore = userState.reduce(function(acc, item) {
+          return acc + (item.firstTrySuccess ? 1 : 0);
+        }, 0);
+        document.getElementById('score-counter').innerText = "Баллы: " + totalScore;
+
+        feedback.className = 'feedback-box correct';
+        feedback.style.display = 'block';
+        let feedbackHTML = '<strong>Верно!</strong> ' + selectedOption.comment;
+        if (q.correctCode) {
+          feedbackHTML += '<div class="code-subtitle">Исправленный код:</div>' +
+                          '<div class="correct-code-display">' + q.correctCode + '</div>';
+        }
+        feedback.innerHTML = feedbackHTML;
+
+        actionContainer.style.display = 'flex';
+        continueBtn.innerText = (currentQuestion === questions.length - 1) ? "Завершить тест" : "Продолжить";
+      } else {
+        state.attempts++;
+        if (state.wrongIndices.indexOf(index) === -1) {
+          state.wrongIndices.push(index);
+        }
+        if (clickedBtn) {
+          clickedBtn.classList.add('wrong');
+          clickedBtn.disabled = true;
+        }
+        feedback.className = 'feedback-box wrong';
+        feedback.style.display = 'block';
+        feedback.innerHTML = '<strong>Неверно.</strong> ' + selectedOption.comment;
+      }
+    }
+
+    function proceedNext() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-content').style.display = 'none';
+      const resultScreen = document.getElementById('result-screen');
+      resultScreen.style.display = 'block';
+      
+      const totalScore = userState.reduce(function(acc, item) {
+        return acc + (item.firstTrySuccess ? 1 : 0);
+      }, 0);
+
+      document.getElementById('final-score').innerText = totalScore + " / " + questions.length;
+      const msg = document.getElementById('final-message');
+      
+      if (totalScore === questions.length) {
+        msg.innerText = "Идеально! Все 16 заданий решены верно с первой попытки. Домашняя работа решится легко и без ошибок!";
+      } else if (totalScore >= 12) {
+        msg.innerText = "Хороший уровень понимания! Синтаксис и базовые механики усвоены, можно переходить к выполнению ДЗ.";
+      } else {
+        msg.innerText = "Рекомендуется повторить границы range(), оформление отступов и логику оператора break.";
+      }
+
+      const badgesContainer = document.getElementById('results-badges');
+      badgesContainer.innerHTML = '';
+      for (let i = 0; i < userState.length; i++) {
+        const badge = document.createElement('div');
+        const st = userState[i];
+        let statusClass = 'unanswered';
+        if (st.solved) {
+          statusClass = st.firstTrySuccess ? 'correct' : 'wrong';
+        }
+        badge.className = 'badge-item ' + statusClass;
+        badge.innerText = '№' + (i + 1);
+        badgesContainer.appendChild(badge);
+      }
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      document.getElementById('result-screen').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
